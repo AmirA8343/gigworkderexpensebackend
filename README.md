@@ -37,7 +37,27 @@ Response:
 
 ```json
 {
-  "text": "..."
+  "text": "...",
+  "structured": {
+    "documentType": "tax_statement",
+    "platform": "Uber Eats",
+    "amountCents": 136487,
+    "basePayCents": 87724,
+    "tipCents": 48463,
+    "bonusCents": 300,
+    "tripCount": null,
+    "onlineMinutes": null,
+    "activeMinutes": null,
+    "onTripDistance": 275,
+    "onlineDistance": 275,
+    "distanceUnit": "km",
+    "summaryType": "custom_range",
+    "periodStartDate": "2026-01-01",
+    "periodEndDate": "2026-01-31",
+    "confidence": 0.9,
+    "warnings": []
+  },
+  "structuredError": null
 }
 ```
 
@@ -54,6 +74,11 @@ Optional:
 
 - `PORT=3000`
 - `MAX_PDF_PAGES=5`
+- `AI_EXTRACTION_API_KEY` or `OPENAI_API_KEY`
+- `AI_EXTRACTION_MODEL=gpt-4o-mini`
+- `AI_EXTRACTION_BASE_URL=https://api.openai.com/v1`
+
+AI extraction is optional. If no AI key is configured, the endpoint still returns OCR text and the mobile app falls back to its local parser. The base URL uses an OpenAI-compatible `/chat/completions` endpoint, so other providers can be used if they support that contract.
 
 ## Local Run
 

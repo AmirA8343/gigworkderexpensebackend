@@ -1,5 +1,6 @@
 const { extractTextFromImage, extractTextFromPdf } = require('./ocr');
 const { verifyFirebaseBearerToken } = require('./firebaseAdmin');
+const { extractStructuredIncome } = require('./aiExtraction');
 
 function sendJson(res, statusCode, payload) {
   res.statusCode = statusCode;
@@ -75,7 +76,23 @@ async function handleIncomeOcr(req, res) {
       return;
     }
 
-    sendJson(res, 200, { text });
+    let structured = null;
+    let structuredError = null;
+    try {
+      structured = await extractStructuredIncome(text, {
+        fileName: typeof body.fileName === 'string' ? body.fileName : null,
+        mimeType,
+      });
+    } catch (error) {
+      structuredError = error.message || 'AI extraction failed';
+      console.warn('[income-ocr] AI extraction failed', error);
+    }
+
+    sendJson(res, 200, {
+      text,
+      structured,
+      structuredError,
+    });
   } catch (error) {
     const statusCode = error.statusCode || 500;
     console.error('[income-ocr] failed', error);
